@@ -1,0 +1,1 @@
+telnet 2016-05-31T18:23:11.964Z ::ffff:192.168.1.41:8000 :::8000 Usuario expulsado
