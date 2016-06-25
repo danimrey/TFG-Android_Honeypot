@@ -1,0 +1,21 @@
+{
+  "name": "telnet-server",
+  "version": "1.0.0",
+  "description": "Servidor telnet emulado",
+  "main": "telnet2.js",
+  "dependencies": {
+    "nedb": "^1.8.0",
+    "colors": "^1.1.2",
+    "net": "^1.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "telnet",
+    "honeypot"
+  ],
+  "author": "Daniel Moreno Rey",
+  "license": "ISC"
+}

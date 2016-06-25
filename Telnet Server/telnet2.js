@@ -14,7 +14,7 @@ var sockets = [];
  * VARIABLES DE CONTROL
  */
 //Controla es estado de la sesión
-var estado = 3;
+var estado = 0;
 //Numero de archivos creados en la sesión
 var nTouchs = 0;
 //Número maximo de archivos creados permitidos
@@ -40,16 +40,18 @@ var expulsados = [];
  */
  var Datastore = require('nedb');
  var db = new Datastore({
-  filename: './Logs/telnet-logs.db', // provide a path to the database file 
+  filename: '../../BaseDatos/logs.db', // provide a path to the database file 
   autoload: true, // automatically load the database
   timestampData: true // automatically add and manage the fields createdAt and updatedAt
 });
 
-function saveLogtoDB(remoteIP, serverIP, cleanData){
+function saveLogtoDB(remoteIP, remotePort, serverIP, serverPort, cleanData){
   var log = {
     Servicio: "Telnet",
     AtacanteIP: remoteIP,
+    AtacantePuerto: remotePort,
     ServerIP: serverIP,
+    ServerPuerto: serverPort,
     Comando: cleanData
     };
   // Save this goal to the database.
@@ -60,16 +62,18 @@ function saveLogtoDB(remoteIP, serverIP, cleanData){
 };
 
   var expulsadosDB = new Datastore({
-  filename: './Logs/telnet-exulsados.db', // provide a path to the database file 
+  filename: '../../BaseDatos/exulsados.db', // provide a path to the database file 
   autoload: true, // automatically load the database
   timestampData: true // automatically add and manage the fields createdAt and updatedAt
 });
 
-function saveLogtoDBExplusado(remoteIP, serverIP){
+function saveLogtoDBExplusado(remoteIP, remotePort, serverIP, serverPort){
   var log = {
     Servicio: "Telnet",
     AtacanteIP: remoteIP,
+    AtacantePuerto: remotePort,
     ServerIP: serverIP,
+    ServerPuerto: serverPort,
     Comando: "Explusado"
     };
   // Save this goal to the database.
@@ -91,7 +95,7 @@ function cleanInput(data) {
  * Escribe en el fichero de logs
  */
 function writeLog(data){
-  fs.appendFileSync("./Logs/TelnetLogs.txt", data +"\n");
+  fs.appendFileSync("../../BaseDatos/TXT/telnet.txt", data +"\n");
 }
 /*
  * MEDIDAS DE SEGURIDAD
@@ -101,19 +105,21 @@ function writeLog(data){
  * Se expulsa al usuario que escriba mas de 100 archivos (umbralNTouch=100) y se borran los archivos creados para liberar memoria.
  */
 function expulsar(socket){
-  var remoteIP = socket.address().address+":"+socket.address().port;
-  var serverIP = server.address().address+":"+server.address().port;
+  var remoteIP = socket.address().address;
+  var remotePort = socket.address().port;
+  var serverIP = server.address().address;
+  var serverPort = server.address().port;
   var time = new Date().toISOString();
   //Guada un log indicando la expulsion
-  writeLog("telnet "+time+" "+remoteIP+" "+serverIP+" Usuario expulsado");
+  writeLog("telnet "+time+" "+remoteIP+":"+remotePort+" "+serverIP+" Expulsado");
   //BD Log
-  saveLogtoDB(remoteIP, serverIP, "Usuario expulsado");
+  saveLogtoDB(remoteIP, remotePort, serverIP, serverPort, "Expulsado");
   //Añade la IP del cliente a la lista de expulsados
   expulsados.push(remoteIP);
   //Crea un log en el fichero de expulsados
-  fs.appendFileSync("./Logs/Explusados.txt", "telnet "+time+" "+remoteIP+" "+serverIP+" Usuario expulsado" +"\n");
+  //fs.appendFileSync(".../../BaseDatos/TXT/expulsados.txt", "telnet "+time+" "+remoteIP+":"+remotePort+" "+serverIP+" Usuario expulsado" +"\n");
   //DB Log
-  saveLogtoDBExplusado(remoteIP, serverIP);
+  saveLogtoDBExplusado(remoteIP, remotePort, serverIP, serverPort);
   //Elimina los archivos creados por el usuario expulsado
   //Rutas se encuantran en el array de control ficherosTouch
   if(ficherosTouch.length!=0){
@@ -187,7 +193,7 @@ function receiveData(socket, data) {
   }
   //Login usuario
   else if(estado == 1){
-    if(cleanData=="user"){
+    if(cleanData!=""){
       estado = 2;
       socket.write("Contraseña: ");
     }else{
@@ -198,7 +204,7 @@ function receiveData(socket, data) {
   }
   //Login contraseña
   else if(estado == 2){
-    if(cleanData=="user"){
+    if(cleanData!=""){
       estado = 3;
       socket.write("Sesión iniciada correctamente\n".green);
       socket.write("> ");
@@ -449,35 +455,46 @@ function closeSocket(socket) {
  * Callback method executed when a new TCP socket is opened.
  */
 function newSocket(socket) {
-  sockets.push(socket);
-  socket.write('Conectado a un servidor Telnet\n');
-  socket.write("> ");
-  //Variables para el Log
-  var remoteIP = socket.address().address+":"+socket.address().port;
-  var serverIP = server.address().address+":"+server.address().port;
-  var time = new Date().toISOString();
-  //TXT Log
-  writeLog("telnet "+time+" "+remoteIP+" "+serverIP+" Inicio de la conexión");
-  console.log("New user connected: "+remoteIP);
-  //DB Log
-  saveLogtoDB(remoteIP, serverIP, "Inicio de la conexión");
-  
-  socket.on('data', function(data) {
-    var cleanData = cleanInput(data);
-    //TXT Log
-    writeLog("telnet "+time+" "+remoteIP+" "+serverIP+" "+cleanData);
-    //Base de datos
-    saveLogtoDB(remoteIP, serverIP, cleanData);
-    receiveData(socket, data);
-  })
-  socket.on('end', function() {
-    //TXT log
-    writeLog("telnet "+time+" "+remoteIP+" "+serverIP+" Fin de la conexión");
+  var control = true;
+  //Comprueba si el usuario esta en la lista de expuldados
+  for(var i in expulsados){
+    if(expulsados[i]==socket.address().address){
+      control = false;
+    }
+  }
+  //Si esta en la lista se expulsa al usuario
+  if(!control){
+    socket.end('Acceso denegado!\n');
+  }
+  //Si no esta en la lista permite interactuar con el servidor
+  else{
+    sockets.push(socket);
+    socket.write('Conectado a un servidor Telnet\n');
+    socket.write("> ");
+    //Variables para el Log
+    var remoteIP = socket.address().address;
+    var remotePort = socket.address().port;
+    var serverIP = server.address().address;
+    var serverPort = server.address().port;
+    var time = new Date().toISOString();
+    
+    console.log("New user connected: "+remoteIP);
     //DB Log
-    saveLogtoDB(remoteIP, serverIP, "Fin de la conexión");
-    console.log("User session closed: "+remoteIP);
-    closeSocket(socket);
-  })
+    saveLogtoDB(remoteIP, remotePort, serverIP, serverPort, "Inicio de la conexión");
+    
+    socket.on('data', function(data) {
+      var cleanData = cleanInput(data);
+      //Base de datos
+      saveLogtoDB(remoteIP, remotePort, serverIP, serverPort, cleanData);
+      receiveData(socket, data);
+    })
+    socket.on('end', function() {
+      //DB Log
+      saveLogtoDB(remoteIP, remotePort, serverIP, serverPort, "Fin de la conexión");
+      console.log("User session closed: "+remoteIP);
+      closeSocket(socket);
+    })
+  }
 }
  
 // Create a new server and provide a callback for when a connection occurs
