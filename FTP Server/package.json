@@ -1,0 +1,23 @@
+{
+  "name": "ftp_server",
+  "version": "1.0.0",
+  "description": "servidor ftp para honeypot",
+  "main": "ftp.js",
+  "dependencies": {
+    "fs": "^0.0.2",
+    "nedb": "^1.8.0",
+    "path": "^0.12.7",
+    "ftpd": "^0.2.15"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ftp",
+    "honeypot",
+    "tfg"
+  ],
+  "author": "Daniel Moreno Rey",
+  "license": "ISC"
+}
