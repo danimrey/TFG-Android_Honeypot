@@ -1,0 +1,199 @@
+<!DOCTYPE HTML>
+<!--
+	Landed by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Honeypot Monitor</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<link href="icon.png" type="image/x-icon" rel="shortcut icon" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+	</head>
+	<body>
+		<div id="page-wrapper">
+
+			<!-- Header -->
+				<header id="header">
+					<h1 id="logo"><a href="/">Android Honeypot Monitor</a></h1>
+					<nav id="nav">
+						<ul>
+							<li><a href="/">Logs recientes</a></li>
+							<li>
+								<a href="#">Logs por servicio</a>
+								<ul>
+									<li><a href="/telnet">Telnet</a></li>
+									<li><a href="/ftp">FTP</a></li>
+									<li>
+										<a href="/http">HTTP</a>
+										<ul>
+											<li><a href="/uploads">Archivos subidos</a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li><a href="/expulsados">Expulsados</a></li>
+							<li><a href="/buscar" class="button special">Buscar</a></li>
+						</ul>
+					</nav>
+				</header>
+
+			<!-- Main -->
+				<div id="main" class="wrapper style1">
+					<div class="container">
+						<header class="major">
+							<h2>Buscador de logs</h2>
+						</header>
+
+								<!-- Table -->
+							<section>
+								<h3>Seleccione los parámetros que quiere filtrar. Obtendrá una tabla con los logs correspondientes.</h3>
+								<form method="post" action="/buscar-form">
+									<div class="row uniform 50%">
+										
+										<div class="4u 12u$(xsmall)">
+											<div class="select-wrapper">
+												<select name="servicio" id="servicio">
+													<option value="default">- Servicio -</option>
+													<option value="Telnet">Telnet</option>
+													<option value="FTP">FTP</option>
+													<option value="HTTP">HTTP</option>
+													<option value="HTTP uploads">HTTP uploads</option>
+												</select>
+											</div>
+										</div>
+										<div class="4u 12u$(xsmall)">
+											<div class="select-wrapper">
+												<select name="atacante" id="atacante">
+													<option value="default">- IP atacante -</option>
+													<% if(ip_atacantes.length != 0){ %>
+														<% for(t in ip_atacantes){ %>
+															<option value="<%= ip_atacantes[t]%>"><%= ip_atacantes[t]%></option>
+														<% } %>
+													<% } %>
+												</select>
+											</div>
+										</div>
+										<div class="4u 12u$(xsmall)">
+											<div class="select-wrapper">
+												<select name="fecha" id="fecha">
+													<option value="default">- Fechas -</option>
+													<% if(fechas.length != 0){ %>
+														<% for(t in fechas){ %>
+															<option value="<%= fechas[t]%>"><%= fechas[t]%></option>
+														<% } %>
+													<% } %>
+												</select>
+											</div>
+										</div>
+										<div class="12u 12u$(xsmall)">
+											<p></p>
+										</div>
+										<div class="4u 12u$(xsmall)">
+											<p>Opciones: </p>
+										</div>
+										<div class="4u 12u$(xsmall)">
+											<div class="select-wrapper">
+												<select name="comandos" id="comandos">
+													<option value="default">- Comandos/Ruta -</option>
+													<% if(comandos.length != 0){ %>
+														<% for(t in comandos){ %>
+															<option value="<%= comandos[t]%>"><%= comandos[t]%></option>
+														<% } %>
+													<% } %>
+												</select>
+											</div>
+										</div>
+										<div class="4u 12u$(xsmall)">
+											<input type="text" name="comando" id="comando" value="" placeholder="Comando/Ruta" />
+										</div>
+										<div class="12u 12u$(xsmall)">
+											<p></p>
+										</div>
+										<!--
+										<div class="4u 12u$(xsmall)">
+											<p>Opciones de FTP: </p>
+										</div>
+										<div class="4u 12u$(xsmall)">
+											<div class="select-wrapper">
+												<select name="category" id="category">
+													<option value="">- Comandos -</option>
+													<% if(comandos.length != 0){ %>
+														<% for(t in comandos){ %>
+															<option value="<%= comandos[t]%>"><%= comandos[t]%></option>
+														<% } %>
+													<% } %>
+												</select>
+											</div>
+										</div>
+										<div class="4u 12u$(xsmall)">
+											<input type="text" name="comando" id="comando" value="" placeholder="Comando" />
+										</div>
+										<div class="12u 12u$(xsmall)">
+											<p></p>
+										</div>
+										<div class="4u 12u$(xsmall)">
+											<p>Opciones de HTTP: </p>
+										</div>
+										<div class="4u 12u$(xsmall)">
+											<div class="select-wrapper">
+												<select name="category" id="category">
+													<option value="">- Comandos -</option>
+													<% if(comandos.length != 0){ %>
+														<% for(t in comandos){ %>
+															<option value="<%= comandos[t]%>"><%= comandos[t]%></option>
+														<% } %>
+													<% } %>
+												</select>
+											</div>
+										</div>
+										<div class="4u 12u$(xsmall)">
+											<input type="text" name="comando" id="comando" value="" placeholder="Comando" />
+										</div>
+										<div class="12u 12u$(xsmall)">
+											<p></p>
+										</div>
+									-->
+										<div class="12u$">
+											<ul class="actions">
+												<li><input type="submit" value="Buscar" class="special" /></li>
+												<li><input type="reset" value="Reset" /></li>
+											</ul>
+										</div>
+									</div>
+								</form>
+							</section>
+					</div>
+				</div>
+
+			<!-- Footer -->
+				<footer id="footer">
+					<ul class="icons">
+						<li><a href="#" class="icon alt fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="https://github.com/danimrey/TFG-Android_Honeypot" class="icon alt fa-github"><span class="label">GitHub</span></a></li>
+						<li><a href="mailto:daniel.moreno.rey@alumnos.upm.es" class="icon alt fa-envelope"><span class="label">Email</span></a></li>
+					</ul>
+					<ul class="copyright">
+						<li>TFG - Daniel Moreno Rey</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					</ul>
+				</footer>
+
+		</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/jquery.dropotron.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
