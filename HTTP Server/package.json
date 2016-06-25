@@ -1,0 +1,31 @@
+{
+  "name": "http_server",
+  "version": "1.0.0",
+  "description": "Servidor HTTP con función de honeypot. Registra todas las peticiones HTTP",
+  "main": "http.js",
+  "dependencies": {
+    "express-favicon": "^1.0.1",
+    "express": "^4.13.4",
+    "ejs": "^2.4.2",
+    "express-ipfilter": "^0.0.25",
+    "multer": "^1.1.0",
+    "express-ip-filter": "^1.0.0",
+    "nedb": "^1.8.0",
+    "path": "^0.12.7",
+    "method-override": "^2.3.6",
+    "body-parser": "^1.15.1",
+    "fs": "^0.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "http",
+    "server",
+    "honeypot",
+    "logs"
+  ],
+  "author": "Daniel Moreno Rey",
+  "license": "ISC"
+}
