@@ -9,6 +9,7 @@ var ftpd = require('ftpd'),
     port: process.env.PORT || 7002,
     tls: null
   };
+  var ruta = "";
   console.log(options.host);
 
 if (process.env.KEY_FILE && process.env.CERT_FILE) {
@@ -49,10 +50,11 @@ server = new ftpd.FtpServer(options.host, {
             callback(err, userDir);
           });
         }
+        ruta = userDir;
       });
     },
   getRoot: function () {
-    return './';
+    return ruta;
   },
   pasvPortRangeStart: 1025,
   pasvPortRangeEnd: 1050,
