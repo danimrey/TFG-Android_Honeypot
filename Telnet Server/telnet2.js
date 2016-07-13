@@ -105,10 +105,10 @@ function writeLog(data){
  * Se expulsa al usuario que escriba mas de 100 archivos (umbralNTouch=100) y se borran los archivos creados para liberar memoria.
  */
 function expulsar(socket){
-  var remoteIP = socket.address().address;
-  var remotePort = socket.address().port;
-  var serverIP = server.address().address;
-  var serverPort = server.address().port;
+  var remoteIP = socket.remoteAddress;
+  var remotePort = socket.remotePort;
+  var serverIP = socket.localAddress;
+  var serverPort = socket.localPort;
   var time = new Date().toISOString();
   //Guada un log indicando la expulsion
   writeLog("telnet "+time+" "+remoteIP+":"+remotePort+" "+serverIP+" Expulsado");
@@ -458,7 +458,7 @@ function newSocket(socket) {
   var control = true;
   //Comprueba si el usuario esta en la lista de expuldados
   for(var i in expulsados){
-    if(expulsados[i]==socket.address().address){
+    if(expulsados[i]==socket.remoteAddress){
       control = false;
     }
   }
@@ -472,10 +472,10 @@ function newSocket(socket) {
     socket.write('Conectado a un servidor Telnet\n');
     socket.write("> ");
     //Variables para el Log
-    var remoteIP = socket.address().address;
-    var remotePort = socket.address().port;
-    var serverIP = server.address().address;
-    var serverPort = server.address().port;
+    var remoteIP = socket.remoteAddress;
+    var remotePort = socket.remotePort;
+    var serverIP = socket.address().address;
+    var serverPort = socket.address().port;
     var time = new Date().toISOString();
     
     console.log("New user connected: "+remoteIP);
