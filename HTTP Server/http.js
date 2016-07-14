@@ -274,6 +274,7 @@ app.get('/download/:id', function(req, res) {
 app.get('/delete/:id/:nombre', function(req, res) {
   console.log(req.params.id);
   saveLogtoDB(req);
+
   var db_http_files_2 = new Datastore({
       filename: '../../BaseDatos/files-http.db', // provide a path to the database file 
       autoload: true, // automatically load the database
@@ -284,10 +285,10 @@ app.get('/delete/:id/:nombre', function(req, res) {
     _id: req.params.id
   }, {}, function(err, file) {
     if (err) res.send(err);
+    //Borra el archivo en el disco
+    console.log('./emulatedStorage/'+req.connection.remoteAddress+"/"+req.params.nombre);
+    fs.unlink('./emulatedStorage/'+req.connection.remoteAddress+"/"+req.params.nombre);
   });
-  //Borra el archivo en el disco
-  console.log('./emulatedStorage/'+req.connection.remoteAddress+"/"+req.params.nombre);
-  fs.unlink('./emulatedStorage/'+req.connection.remoteAddress+"/"+req.params.nombre);
   //saveLogtoDB(req);
   //res.render('contactos.ejs');
   res.redirect('/archivos');

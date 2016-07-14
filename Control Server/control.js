@@ -657,5 +657,6 @@ app.use(function(req, res, next){
   // default to plain-text. send()
   res.type('txt').send('Not found');
 });
-app.listen(9008, '127.0.0.1');  
-console.log("Servidor de control en http://127.0.0.1:9008");
+//app.listen(9008, '127.0.0.1');  
+app.listen(9008);  
+console.log("Servidor de control puerto 9008");
