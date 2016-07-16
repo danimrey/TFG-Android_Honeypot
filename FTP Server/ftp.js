@@ -40,11 +40,20 @@ else {
 
 server = new ftpd.FtpServer(options.host, {
     //El usuario puede moverse dentro de emulated storage pero no puede salir de esta carpeta
-  getInitialCwd: function(connection) {
-      return "./emulatedStorage/";
+  getInitialCwd: function(connection, callback) {
+      var userDir = './emulatedStorage/' + connection.username;
+      fs.exists(userDir, function(exists) {
+        if (exists) {
+          callback(null, userDir);
+        } else {
+          fs.mkdir(userDir, function(err) {
+            callback(err, userDir);
+          });
+        }
+      });
     },
   getRoot: function () {
-    return "/";
+    return "./";
   },
   pasvPortRangeStart: 1025,
   pasvPortRangeEnd: 1050,

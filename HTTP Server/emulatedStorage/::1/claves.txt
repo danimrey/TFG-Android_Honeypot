@@ -1,6 +1,0 @@
-NAME  PASSWORD
-- - - - - - - 
-user1 123456
-user2 qwerty
-user3 asdfgh
-user4 password
